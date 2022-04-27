@@ -4,6 +4,8 @@ This bot greets every joined member with a custom greeting taken from a google s
 How to use:
 
 - Dublicate this Google Sheet: https://docs.google.com/spreadsheets/d/1nkwrHRAG1X9RgGu7h4iAkkC6qHhpTMhz5Zvq9gmjOBo/edit?usp=sharing
+- Add your Google Cloud app to the sheet with write permission
+- Download your app's config JSON and put in the same folder as this project
 - Add greetings to the first sheet as in example
 - In config.py set your sheet URL in variable SHEET_URL
 - In config.py set your bot token in variable TOKEN
