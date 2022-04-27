@@ -7,7 +7,7 @@ import config
 from collections import defaultdict
 
 sa = gspread.service_account(filename="cloudconfig.json")
-sh = sa.open_by_key('1nkwrHRAG1X9RgGu7h4iAkkC6qHhpTMhz5Zvq9gmjOBo')
+sh = sa.open_by_key(config.SHEET_URL)
 
 greetssheet = sh.worksheet("1")
 serverssheet = sh.worksheet("2")
@@ -45,7 +45,7 @@ async def setWelcomeChannel(message):
             if "i"+str(message.guild.id) in arr:
                 break
             i+=1
-        serverssheet.update(f"B{i}", "i"+str(message.channel.id))
+        serverssheet.update(f"B{i+1}", "i"+str(message.channel.id))
         
         embed = discord.Embed(title=f"Set channel {message.channel} to default!", color=discord.Color.green())
         await message.channel.send(embed=embed)
@@ -64,14 +64,18 @@ async def on_member_join(member):
     server = []
     i = 0
     factNumber = 0
+    greetings = greetssheet.get_all_values()
     for arr in servers:
         if "i"+str(member.guild.id) in arr:
             server = arr
             factNumber = int(arr[-1].replace("i", ""))
-            serverssheet.update(f"C{i}", "i"+str(factNumber+1))
+            if factNumber >= len(greetings):
+                serverssheet.update(f"C{i+1}", "i1")
+                factNumber = 0
+                break
+            serverssheet.update(f"C{i+1}", "i"+str(factNumber+1))
             break
         i+=1
-    greetings = greetssheet.get_all_values()
     if len(greetings) == 0: return
     greeting = greetings[factNumber][0]
     embed = discord.Embed(title=f"{member.name} joined the server!", description=greeting, color=discord.Color.blue())
